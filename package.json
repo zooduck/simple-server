@@ -2,7 +2,7 @@
   "name": "@zooduck/simple-server",
   "version": "0.0.2",
   "description": "Simple file server with routing",
-  "main": "dist/index.module.mjs",
+  "main": "dist/index.module.js",
   "type": "module",
   "repository": {
     "url": "git+https://github.com/zooduck/simple-server.git"
