@@ -3,12 +3,14 @@
   "version": "0.0.1",
   "description": "Simple file server with routing",
   "main": "dist/index.module.mjs",
+  "type": "module",
   "repository": {
     "url": "git+https://github.com/zooduck/simple-server.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.mjs"
+    "build": "node build.js",
+    "start": "node server.js"
   },
   "author": "zooduck",
   "license": "MIT",
