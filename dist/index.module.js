@@ -17,6 +17,7 @@ class SimpleServer {
   };
   static #DEFAULT_PROTOCOL = 'http';
   static #VALID_PROTOCOL_REGEX = /^https?$/;
+  #globals;
   #port;
   #protocol;
   #routes = new Map();
@@ -43,6 +44,9 @@ class SimpleServer {
   }
   addRoute(route, callback) {
     this.#routes.set(this.#normalizePath(path.join('api', route)), callback);
+  }
+  defineGlobals(dictionary) {
+    this.#globals = dictionary;
   }
   async start() {
     await this.#createTempRouteFilesDirectory();
@@ -117,7 +121,7 @@ class SimpleServer {
     const url = this.#getPathnameFromRequest(request);
     const route = this.#routes.get(this.#normalizePath(url));
     if (route) {
-      const result = await route(request);
+      const result = await route(request, this.#globals);
       if (!result) {
         response.statusCode = '400';
         return response.end(JSON.stringify({

@@ -34,7 +34,7 @@ import { fileURLToPath } from 'node:url';
  *
  * @example
  * // You can also use files for routes.
- * // The file must reside in a root level (staticPath) "api" folder and export a default function:
+ * // The file must reside in a root level (staticPath) "api" folder (or subdirectory) and export a default function:
  *
  * // public/api/v2/book.js
  * export default async (request) => {
@@ -45,6 +45,20 @@ import { fileURLToPath } from 'node:url';
  * // Call the endpoint:
  * const bookResponse = await fetch('api/v2/book')
  * const bookResult = await bookResponse.json()
+ *
+ * @example
+ * // If you need to share globals between file routes, use the defineGlobals() method:
+ * const server = new SimpleServer()
+ * let numberOfCallsToBookEndpoint = 0;
+ * // ...
+ * server.defineGlobals({ numberOfCallsToBookEndpoint: numberOfCallsToBookEndpoint })
+ *
+ * // public/api/book.js
+ * export default (request, globals) => {
+ *  globals.numberOfCallsToBookEndpoint += 1;
+ *  // ...
+ *  return JSON.stringify({ book: book, totalRequests: globals.numberOfCallsToBookEndpoint })
+ * }
  *
  * @example
  * // Make a bad request from the client (make a POST request for a route that only supports GET):
@@ -69,6 +83,7 @@ class SimpleServer {
   };
   static #DEFAULT_PROTOCOL = 'http';
   static #VALID_PROTOCOL_REGEX = /^https?$/;
+  #globals;
   #port;
   #protocol;
   #routes = new Map();
@@ -117,6 +132,14 @@ class SimpleServer {
    */
   addRoute(route, callback) {
     this.#routes.set(this.#normalizePath(path.join('api', route)), callback);
+  }
+  /**
+   * @method
+   * @param {Object.<string, *>} dictionary
+   * @returns {void}
+   */
+  defineGlobals(dictionary) {
+    this.#globals = dictionary;
   }
   /**
    * @method
@@ -235,7 +258,7 @@ class SimpleServer {
     // --------
     const route = this.#routes.get(this.#normalizePath(url));
     if (route) {
-      const result = await route(request);
+      const result = await route(request, this.#globals);
       if (!result) {
         response.statusCode = '400';
         return response.end(JSON.stringify({
