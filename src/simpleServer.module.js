@@ -201,7 +201,18 @@ class SimpleServer {
    */
   async #getRoutesFromAPIFolder() {
     const routeFilesPath = arguments[0] || path.join(this.#staticPath, 'api');
-    const routeFiles = await fs.readdir(routeFilesPath, { withFileTypes: true });
+    let routeFiles;
+
+    try {
+      routeFiles = await fs.readdir(routeFilesPath, { withFileTypes: true });
+    } catch {
+      // ...
+    }
+
+    if (!routeFiles) {
+      return;
+    }
+
     for (const fileOrDirectory of routeFiles) {
       if (fileOrDirectory.isDirectory()) {
         await this.#getRoutesFromAPIFolder(path.join(routeFilesPath, fileOrDirectory.name));
