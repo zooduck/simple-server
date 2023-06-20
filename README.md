@@ -36,7 +36,7 @@ Copy the `modules` folder to your project.
 Import using a module file:
 
 ```javascript
-import 'path/to/modules/@zooduck/simple-server/index.module.js'
+import { SimpleServer } from 'path/to/modules/@zooduck/simple-server/index.module.js'
 ```
 
 ## Use
