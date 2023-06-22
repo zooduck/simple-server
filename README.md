@@ -29,7 +29,6 @@ Clone or [Download](https://github.com/zooduck/simple-server/archive/refs/heads/
 
 ## Import
 
-
 ```javascript
 import { SimpleServer } from 'path/to/@zooduck/simple-server/dist/index.module.js'
 ```
