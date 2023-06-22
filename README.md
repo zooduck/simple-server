@@ -36,7 +36,7 @@ import { SimpleServer } from 'path/to/@zooduck/simple-server/dist/index.module.j
 
 ## Use
 
-The `SimpleServer` class is primarily designed for development use, and includes support for routing using it's `addRoute()` instance method or by adding a route file.
+This module is primarily designed for development use, but also supports routing (either via the `addRoute()` instance method or with a route file).
 
 ## Examples
 
