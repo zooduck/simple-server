@@ -27,16 +27,11 @@ Install via package.json:
 
 Clone or [Download](https://github.com/zooduck/simple-server/archive/refs/heads/master.zip) the repository to your machine.
 
-## Getting started
-
-Copy the `modules` folder to your project.
-
 ## Import
 
-Import using a module file:
 
 ```javascript
-import { SimpleServer } from 'path/to/modules/@zooduck/simple-server/index.module.js'
+import { SimpleServer } from 'path/to/@zooduck/simple-server/dist/index.module.js'
 ```
 
 ## Use
