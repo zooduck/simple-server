@@ -1,8 +1,10 @@
 # SimpleServer
 
-Simple file server with routing.
+Simple zero-dependency file server with routing.
 
-## For users with an access token
+## Installation
+
+### For users with an access token
 
 Add a `.npmrc` file to your project, with the following lines:
 
@@ -23,7 +25,7 @@ Install via package.json:
 "@zooduck/simple-server": "latest"
 ```
 
-## For users without an access token
+### For users without an access token
 
 Clone or [Download](https://github.com/zooduck/simple-server/archive/refs/heads/master.zip) the repository to your machine.
 
@@ -35,7 +37,7 @@ import { SimpleServer } from 'path/to/@zooduck/simple-server/dist/index.module.j
 
 ## Use
 
-This module is primarily designed for development use, but also supports routing (either via the `addRoute()` instance method or with a route file).
+This module is primarily designed for development use, but also includes basic support for routing (see examples for more details).
 
 ## Examples
 
