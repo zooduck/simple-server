@@ -1,6 +1,6 @@
 # SimpleServer
 
-Simple zero-dependency file server with routing.
+Simple zero-dependency file server with routing. Includes dynamic page support for single page applications.
 
 ## Installation
 
@@ -133,3 +133,18 @@ console.log(result)
 // { error: '400 Bad Request' }
 
 ```
+
+### Dynamic Pages
+
+This server supports dynamic pages. Any url *not* prefixed with `api/` and *not* pointing to a file will return the `index.html` file from the static path.
+
+Your routing service can then deliver the approriate content based on the url.
+
+The following table illustrates how non-api urls are handled when the static path is set to `"public"`.
+
+| url                            | file                                 |
+| ------------------------------ | ------------------------------------ |
+| /                              | public/index.html                    |
+| /pages/cities/tokyo            | public/index.html                    |
+| /pages/cities/tokyo/index.html | public/pages/cities/tokyo/index.html |
+| /scripts/example/index.js      | public/scripts/example/index.js      |

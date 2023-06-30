@@ -281,7 +281,11 @@ class SimpleServer {
     // -------------
     // File Server
     // -------------
-    const filePath = url.endsWith('/') ? path.join(this.#staticPath, url, 'index.html') : path.join(this.#staticPath, url);
+    const FILE_EXTENSION_REGEX = /\.[a-zA-Z0-9]+$/;
+    const isRootIndexPage = url === '/';
+    const isDynamicPage = url !== '/' && !FILE_EXTENSION_REGEX.test(url);
+
+    const filePath = isRootIndexPage || isDynamicPage ? path.join(this.#staticPath, '/', 'index.html') : path.join(this.#staticPath, url);
 
     let fileExists;
     let filehandle;
