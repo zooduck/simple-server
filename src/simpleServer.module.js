@@ -83,6 +83,7 @@ class SimpleServer {
   };
   static #DEFAULT_PROTOCOL = 'http';
   static #VALID_PROTOCOL_REGEX = /^https?$/;
+  #dynamicPages;
   #globals;
   #port;
   #protocol;
@@ -93,7 +94,8 @@ class SimpleServer {
    * @constructor
    * @param {{port: number, protocol: 'http'|'https', staticPath: string}} [options]
    */
-  constructor({ port = 8080, protocol = 'http', staticPath = './' } = {}) {
+  constructor({ dynamicPages = true, port = 8080, protocol = 'http', staticPath = './' } = {}) {
+    this.#dynamicPages = dynamicPages;
     this.#port = port;
     this.#protocol = this.constructor.#VALID_PROTOCOL_REGEX.test(protocol) ? protocol : this.constructor.#DEFAULT_PROTOCOL;
     this.#staticPath = staticPath;
@@ -249,11 +251,29 @@ class SimpleServer {
   /**
    * @private
    * @method
+   * @param {string} pathname
+   * @returns {boolean}
+   */
+  #isDynamicPagePath(pathname) {
+    const FILE_EXTENSION_REGEX = /\.[a-zA-Z0-9]+$/;
+    return this.#dynamicPages && !FILE_EXTENSION_REGEX.test(pathname);
+  }
+  /**
+   * @private
+   * @method
    * @param {string} pathToNormalize
+   * @example
+   * // assets/svg/example.svg
+   * this.#normalizePath('\\assets\\svg\\example.svg')
+   * this.#normalizePath('/assets/svg/example.svg')
+   * @example
+   * // pages/examples/example_one
+   * this.#normalizePath('\\pages\\examples\\example_one\\')
+   * this/#normalizePath('/pages/example/example_one/')
    * @returns {string} normalizedPath
    */
   #normalizePath(pathToNormalize) {
-    return path.normalize(pathToNormalize).replace(/^[/\\]|[/\\]$/g, '');
+    return path.normalize(pathToNormalize).replace(/^[/\\]|[/\\]$/g, '').replace(/[\\]/g, '/');
   }
   /**
    * @private
@@ -281,11 +301,8 @@ class SimpleServer {
     // -------------
     // File Server
     // -------------
-    const FILE_EXTENSION_REGEX = /\.[a-zA-Z0-9]+$/;
     const isRootIndexPage = url === '/';
-    const isDynamicPage = url !== '/' && !FILE_EXTENSION_REGEX.test(url);
-
-    const filePath = isRootIndexPage || isDynamicPage ? path.join(this.#staticPath, '/', 'index.html') : path.join(this.#staticPath, url);
+    const filePath = isRootIndexPage || this.#isDynamicPagePath(url) ? path.join(this.#staticPath, 'index.html') : path.join(this.#staticPath, url);
 
     let fileExists;
     let filehandle;

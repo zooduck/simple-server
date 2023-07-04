@@ -1,3 +1,5 @@
 .npmrc
+server.dev.js
 node_modules/
 tmp/
+playground/

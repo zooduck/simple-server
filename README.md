@@ -35,27 +35,25 @@ Clone or [Download](https://github.com/zooduck/simple-server/archive/refs/heads/
 import { SimpleServer } from 'path/to/@zooduck/simple-server/dist/index.module.js'
 ```
 
-## Use
-
-This module is primarily designed for development use, but also includes basic support for routing (see examples for more details).
-
-## Examples
-
-### Start a server
+## Start a server
 
 ```javascript
 const server = new SimpleServer()
 server.start()
 ```
 
-### Start a server (with parameters)
+## Start a server (with parameters)
 
 ```javascript
-const server = new SimpleServer({ port: 1234, protocol: 'https', staticPath: 'public' })
+const server = new SimpleServer({
+  port: 1234,
+  protocol: 'https',
+  staticPath: 'public'
+})
 server.start()
 ```
 
-### Add a route
+## Add a route
 
 ```javascript
 const server = new SimpleServer()
@@ -75,16 +73,16 @@ server.start()
 Call the endpoint:
 
 ```javascript
-// Routes always get prefixed with "api/".
+// Routes always start with 'api/'
 const bookResponse = await fetch('api/book')
 const bookResult = await bookResponse.json()
 ```
 
-### Add a route using a file
+## Add a route using a file
 
 You can also use files for routes.
 
-The file must reside in a root level (staticPath) "api" folder (or subdirectory) and export a default function.
+The file must reside in a root level `"api"` folder (or subdirectory) and export a default function.
 
 The function can be asynchronous or synchronous.
 
@@ -103,9 +101,9 @@ const bookResponse = await fetch('api/v2/book')
 const bookResult = await bookResponse.json()
 ```
 
-### Defining globals
+## Defining globals
 
-If you need to share globals between file routes, use the defineGlobals() method.
+If you need to share globals between file routes, use the `defineGlobals()` method.
 
 Globals are passed as the second argument to your exported function.
 
@@ -124,27 +122,40 @@ export default (request, globals) => {
 }
 ```
 
-### Make a bad request from the client (make a POST request for a route that only supports GET)
+## Make a bad request from the client (make a POST request for a route that only supports GET)
 
 ```javascript
-const response = await fetch('api/book', { method: 'POST', body: 'This is a bad request' })
+const response = await fetch('api/book', {
+  method: 'POST',
+  body: 'This is a bad request'
+})
 const result = await response.json()
 console.log(result)
 // { error: '400 Bad Request' }
 
 ```
 
-### Dynamic Pages
+Note: This example assumes that your`book` route returns `null` for `POST` requests.
 
-This server supports dynamic pages. Any url *not* prefixed with `api/` and *not* pointing to a file will return the `index.html` file from the static path.
+## Dynamic Pages
+
+This server supports dynamic pages by default. Any url ***not*** prefixed with `api/` and ***not*** pointing to a file will return the `index.html` file from the static path.
 
 Your routing service can then deliver the approriate content based on the url.
 
-The following table illustrates how non-api urls are handled when the static path is set to `"public"`.
+The following table illustrates how non-api urls are handled when the router is configured with the `staticPath` option set to `"public"`.
 
-| url                            | file                                 |
-| ------------------------------ | ------------------------------------ |
-| /                              | public/index.html                    |
-| /pages/cities/tokyo            | public/index.html                    |
-| /pages/cities/tokyo/index.html | public/pages/cities/tokyo/index.html |
-| /scripts/example/index.js      | public/scripts/example/index.js      |
+| url                                  | file                                 |
+| ------------------------------------ | ------------------------------------ |
+| /                                    | public/index.html                    |
+| /pages/cities/tokyo                  | public/index.html                    |
+| /pages/cities/tokyo/info.pdf         | public/pages/cities/tokyo/info.pdf   |
+| /pages/cities/tokyo/index.html       | public/pages/cities/tokyo/index.html |
+| /pages/cities/tokyo/missing_file.pdf | public/404.html                      |
+| /scripts/example/index.js            | public/scripts/example/index.js      |
+
+Note: You can disable this behaviour if you wish, by setting the `dynamicPages` option to `false` when creating the server:
+
+```javascript
+const server = new SimpleServer({ dynamicPages: false })
+```

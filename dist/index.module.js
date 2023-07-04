@@ -20,13 +20,15 @@ class SimpleServer {
   };
   static #DEFAULT_PROTOCOL = 'http';
   static #VALID_PROTOCOL_REGEX = /^https?$/;
+  #dynamicPages;
   #globals;
   #port;
   #protocol;
   #routes = new Map();
   #staticPath;
   #tempRouteFilesDirectoryAbsolutePath;
-  constructor({ port = 8080, protocol = 'http', staticPath = './' } = {}) {
+  constructor({ dynamicPages = true, port = 8080, protocol = 'http', staticPath = './' } = {}) {
+    this.#dynamicPages = dynamicPages;
     this.#port = port;
     this.#protocol = this.constructor.#VALID_PROTOCOL_REGEX.test(protocol) ? protocol : this.constructor.#DEFAULT_PROTOCOL;
     this.#staticPath = staticPath;
@@ -124,8 +126,12 @@ class SimpleServer {
   #getPathnameFromRequest = (request) => {
     return new URL(request.url, `http://${request.headers.host}`).pathname;
   };
+  #isDynamicPagePath(pathname) {
+    const FILE_EXTENSION_REGEX = /\.[a-zA-Z0-9]+$/;
+    return this.#dynamicPages && !FILE_EXTENSION_REGEX.test(pathname);
+  }
   #normalizePath(pathToNormalize) {
-    return path.normalize(pathToNormalize).replace(/^[/\\]|[/\\]$/g, '');
+    return path.normalize(pathToNormalize).replace(/^[/\\]|[/\\]$/g, '').replace(/[\\]/g, '/');
   }
   async #requestListener (request, response) {
     const url = this.#getPathnameFromRequest(request);
@@ -140,10 +146,8 @@ class SimpleServer {
       }
       return response.end(result);
     }
-    const FILE_EXTENSION_REGEX = /\.[a-zA-Z0-9]+$/;
     const isRootIndexPage = url === '/';
-    const isDynamicPage = url !== '/' && !FILE_EXTENSION_REGEX.test(url);
-    const filePath = isRootIndexPage || isDynamicPage ? path.join(this.#staticPath, '/', 'index.html') : path.join(this.#staticPath, url);
+    const filePath = isRootIndexPage || this.#isDynamicPagePath(url) ? path.join(this.#staticPath, 'index.html') : path.join(this.#staticPath, url);
     let fileExists;
     let filehandle;
     await new Promise(async (resolve) => {
