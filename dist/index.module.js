@@ -1,5 +1,5 @@
 /* ----------------------------- */
-/* @zooduck/simple-server v0.0.3 */
+/* @zooduck/simple-server v0.0.4 */
 /* ----------------------------- */
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
