@@ -110,13 +110,13 @@ Globals are passed as the second argument to your exported function.
 ```javascript
 // server.js
 const server = new SimpleServer()
-let numberOfCallsToBookEndpoint = 0;
+let numberOfCallsToBookEndpoint = 0
 // ...
 server.defineGlobals({ numberOfCallsToBookEndpoint: numberOfCallsToBookEndpoint })
 
 // public/api/book.js
 export default (request, globals) => {
- globals.numberOfCallsToBookEndpoint += 1;
+ globals.numberOfCallsToBookEndpoint += 1
  // ...
  return JSON.stringify({ book: book, totalRequests: globals.numberOfCallsToBookEndpoint })
 }
