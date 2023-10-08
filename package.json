@@ -1,6 +1,6 @@
 {
   "name": "@zooduck/simple-server",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple zero-dependency file server with routing",
   "main": "dist/index.module.js",
   "type": "module",
