@@ -1,5 +1,5 @@
 /* ----------------------------- */
-/* @zooduck/simple-server v0.0.4 */
+/* @zooduck/simple-server v0.0.5 */
 /* ----------------------------- */
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -30,7 +30,7 @@ class SimpleServer {
   constructor({ dynamicPages = true, port = 8080, protocol = 'http', staticPath = './' } = {}) {
     this.#dynamicPages = dynamicPages;
     this.#port = port;
-    this.#protocol = this.constructor.#VALID_PROTOCOL_REGEX.test(protocol) ? protocol : this.constructor.#DEFAULT_PROTOCOL;
+    this.#protocol = SimpleServer.#VALID_PROTOCOL_REGEX.test(protocol) ? protocol : SimpleServer.#DEFAULT_PROTOCOL;
     this.#staticPath = staticPath;
   }
   static getBodyFromRequest(request) {
@@ -86,7 +86,7 @@ class SimpleServer {
           break;
       }
     });
-    console.log(`${this.#protocol} server running at 127.0.0.1: ${this.#port}...`);
+    console.log(`Server running at ${this.#protocol}://127.0.0.1:${this.#port}...`);
   }
   async #createTempRouteFilesDirectory() {
     const simpleServerModuleRootDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -164,7 +164,7 @@ class SimpleServer {
     const statusCode = fileExists ? 200 : 404;
     const streamPath = fileExists ? filePath : path.join(this.#staticPath, '404.html');
     const fileExtension = path.extname(streamPath).substring(1).toLowerCase();
-    const mimeType = this.constructor.#MIME_TYPES[fileExtension] || this.constructor.#MIME_TYPES.default;
+    const mimeType = SimpleServer.#MIME_TYPES[fileExtension] || SimpleServer.#MIME_TYPES.default;
     const fileHandle = await fs.open(streamPath);
     const stream = fileHandle.createReadStream({ autoClose: false });
     stream.addListener('end', () => {
